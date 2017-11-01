@@ -1,0 +1,142 @@
+// Sass directives which are applied to the entire application.
+//
+// @package PWK8\Bookmarker
+// @author  The Laravel team, with substantial modifications by Philip W. Knerr <pwk8@philknerr.com>
+// @license MIT
+
+
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Raleway:100,300,400,600");
+
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+
+//// Overrides for the default Bootstrap styling.
+
+// Form control elements.
+.form-control {
+  color: $form-control;
+}
+
+// Form control elements which have errors.
+.has-error .form-control {
+  border-color: $brand-danger;
+}
+
+// Form control elements which have errors and have focus.
+.has-error .form-control:focus {
+  border-color: $brand-danger;
+}
+
+// Help blocks and labels for form elements which have errors.
+.has-error .help-block, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline,
+.has-error .checkbox-inline, .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label,
+.has-error.checkbox-inline label {
+  color: $brand-danger;
+}
+
+// Success alerts.
+.alert-success {
+  color: $brand-success;
+}
+
+// Danger alerts.
+.alert-danger {
+  color: $brand-danger;
+}
+
+// The branding in the top navigation bar.
+.navbar-default .navbar-brand {
+  color: $heading;
+}
+
+// Links in the top navigation bar.
+.navbar-default .navbar-nav > li > a {
+  color: $heading;
+}
+
+// Links in the drop-down menu opened via the top navigation bar.
+.dropdown-menu > li > a {
+  color: $brand-primary;
+}
+
+// Panel headings.
+.panel-default > .panel-heading {
+  color: $heading;
+}
+
+//// End of the overrides for the default Bootstrap styling.
+
+
+//// Styling applicable to the entire application.
+
+// Favicons for bookmarks.
+img.favicon {
+  height: 32px;
+  width: 32px;
+  margin: 2px;
+}
+
+//// End of styling applicable to the entire application.
+
+
+//// Styling for the welcome page.
+
+body.welcome {
+  background-color: #fff;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  height: 100vh;
+  margin: 0;
+}
+
+body.welcome .full-height {
+  height: 100vh;
+}
+
+body.welcome .flex-center {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+body.welcome .position-ref {
+  position: relative;
+}
+
+body.welcome .top-right {
+  position: absolute;
+  right: 10px;
+  top: 18px;
+}
+
+body.welcome .content {
+  margin-left: 30px;
+  margin-right: 30px;
+  text-align: center;
+}
+
+body.welcome .title {
+  font-size: 60px;
+}
+
+body.welcome .links > a {
+  padding: 0 25px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1rem;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+body.welcome .m-b-md {
+  margin-bottom: 30px;
+  color: $heading;
+  font-weight: 100;
+}
+
+//// End of styles for welcome page.

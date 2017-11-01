@@ -1,0 +1,47 @@
+// Sass variables which are relevant to the entire application.
+//
+// @package PWK8\Bookmarker
+// @author  The Laravel team, with substantial modifications by Philip W. Knerr <pwk8@philknerr.com>
+// @license MIT
+
+// Body
+$body-bg: #f5f8fa;
+
+// Borders
+$laravel-border-color: darken($body-bg, 10%);
+$list-group-border: $laravel-border-color;
+$navbar-default-border: $laravel-border-color;
+$panel-default-border: $laravel-border-color;
+$panel-inner-border: $laravel-border-color;
+
+// Brands
+$brand-primary: #0e4f90;
+$brand-info: #8eb4cb;
+$brand-success: #005400;
+$brand-warning: #a48623;
+$brand-danger: #b20818;
+
+// Typography
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+$font-family-sans-serif: "Raleway", sans-serif;
+$font-size-base: 14px;
+$line-height-base: 1.6;
+$text-color: #005400;
+
+// Navbar
+$navbar-default-bg: #fff;
+
+// Buttons
+$btn-default-color: $text-color;
+
+// Inputs
+$input-border: $text-color;
+$input-border-focus: $brand-primary;
+$input-color-placeholder: #005400;
+$form-control: #000;
+
+// Panels
+$panel-default-heading-bg: #fff;
+
+// Headings
+$heading: #a48623;
