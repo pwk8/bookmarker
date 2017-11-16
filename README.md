@@ -33,12 +33,19 @@ Ensure that the virtual host can process pretty URL's.  The [Laravel documentati
 
 Clone the Bookmarker repository into the directory in which the Bookmarker application should be stored.  Note that subsequent steps should be performed in this application directory, unless otherwise noted.
 
-Ensure that the HTTP server can write to the following subdirectories of the application directory, including all files and subdirectories contained therein:
+Ensure that the HTTP server can read and write to the following subdirectories of the application directory, including all files and subdirectories contained therein:
 
 * `bootstrap/cache`
 * `storage`
 
-A good way to do this is to change ownership of these subdirectories and files to the *group* under which the HTTP server executes.  Then, make these subdirectories and files group-writeable.
+A good way to do this is to change ownership of these subdirectories and files to the *group* under which the HTTP server executes.  Then, grant all permissions on these subdirectories and files to this group.  For example, if the HTTP server executes as the `apache` group, you can execute the following shell commands:
+
+```console
+sudo chgrp -R apache bootstrap/cache
+chmod -R g+rwx bootstrap/cache
+sudo chgrp -R apache storage
+chmod -R g+rwx storage
+```
 
 Copy the file named `.env.example` to a file named `.env`.
 
@@ -51,6 +58,12 @@ Generate an application key by executing the following shell command:
 
 ```console
 php artisan key:generate
+```
+
+Install PHP dependencies by executing the following shell command:
+
+```console
+composer install
 ```
 
 Install JavaScript dependencies by executing the following shell command:
@@ -96,13 +109,15 @@ Exit the PostgreSQL database by executing the following SQL command:
 \q
 ```
 
-Edit the PostgreSQL Client Authentication Configuration File.  The location of this file depends on the flavor of Linux installed on the server.  Moreover, the file path depends on the installed version of the PostgreSQL database.  The commands below assume that version 9.6 is installed; the path needs to be adjusted if you are running a different version of the PostgreSQL database.
+Edit the PostgreSQL Client Authentication Configuration File.  The location of this file depends on the flavor of Linux installed on the server.  Moreover, the file path depends on the installed version of the PostgreSQL database.  The commands below assume that version 9.6.x is installed; the path needs to be adjusted if you are running a different major or minor release of the PostgreSQL database.
 
 * On the Debian or Ubuntu operating system, execute the following shell command as the root user:
 
 ```console
 sudo -u postgres nano /etc/postgresql/9.6/main/pg_hba.conf
 ```
+
+N.B.  The Laravel Homestead virtual environment currently installs the Ubuntu operating system and version 9.5.x of the PostgreSQL database.
 
 * On the Amazon Linux operating system, execute the following shell command as the root user:
 
@@ -116,9 +131,9 @@ In the text editor, change `peer` to `md5` in the following line:
 local   all             all                                     peer
 ```
 
-On the Amazon Linux operating system, and possibly on some other configurations, you will also need to change `ident` to `md5` in the following two lines.
+On the Amazon Linux operating system, and possibly on some other configurations, you will also need to change `ident` to `md5` in the next two uncommented lines below the line above.
 
-Restart PostgreSQL.  Here again, the syntax depends on the flavor of Linux installed on the server.
+Restart the PostgreSQL database.  Here again, the syntax depends on the flavor of Linux installed on the server.
 
 * On the Debian or Ubuntu operating system, execute the following shell command as the root user:
 
@@ -126,7 +141,7 @@ Restart PostgreSQL.  Here again, the syntax depends on the flavor of Linux insta
 sudo service postgresql restart
 ```
 
-* On the Amazon Linux operating system, execute the following shell command as the root user, again adjusting the name of the service if a version of the PostgreSQL database other than version 9.6 is installed:
+* On the Amazon Linux operating system, execute the following shell command as the root user, again adjusting the name of the service if a version of the PostgreSQL database other than version 9.6.x is installed:
 
 ```console
 sudo service postgresql96 restart
