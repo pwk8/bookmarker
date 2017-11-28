@@ -27,3 +27,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('bookmark', 'BookmarkController');
+
+Route::get('/modern-ui', 'ModernUiController@index')->name('modern-ui');
+
+Route::get('/api-access', 'ApiAccessController@index')->name('api-access');

@@ -69,10 +69,32 @@
   color: $heading;
 }
 
+// Titles of modals.
+.modal-title {
+  color: $heading;
+}
+
 //// End of the overrides for the default Bootstrap styling.
 
 
 //// Styling applicable to the entire application.
+
+// Panel heading content.
+.panel-heading-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// Hyperlinks which cause actions.
+.action-link {
+  cursor: pointer;
+}
+
+// Content which should have a bottom margin of zero.
+.m-b-none {
+  margin-bottom: 0;
+}
 
 // Favicons for bookmarks.
 img.favicon {

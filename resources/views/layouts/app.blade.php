@@ -20,7 +20,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div>
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
@@ -61,11 +61,13 @@
                                     <li>
                                         <a href="{{ route('home') }}">Dashboard</a>
 
-                                        <a href="{{ route('logout') }}"
-                                           onclick="event.preventDefault();
-                                                    document.getElementById('logout-form').submit();">
-                                            Logout
-                                        </a>
+                                        <a href="{{ route('modern-ui') }}">Modern UI</a>
+
+                                        <a href="{{ route('bookmark.index') }}">Classic UI</a>
+
+                                        <a href="{{ route('api-access') }}">API Access</a>
+
+                                        @include ('logout-link')
 
                                         <form id="logout-form" class="hidden"
                                               action="{{ route('logout') }}" method="POST">

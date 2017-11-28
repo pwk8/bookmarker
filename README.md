@@ -11,6 +11,8 @@ Bookmarks can be viewed, followed, created, updated, and trashed via a web-based
 
 Bookmarker is a multi-user application.  Users may register for accounts and log in to an existing accounts.
 
+Bookmarker offers the "Modern UI", a modern, Vue.js-based user interface which communicates with the server via an API.  It also offers the "Classic UI", which should work on older browsers, when JavaScript is disabled, or both.
+
 
 ## Dependencies ##
 
@@ -169,6 +171,16 @@ psql --username=bookmarker --password bookmarker
 ```
 
 
+## Other configuration ##
+
+The Vue.js-based UI for Bookmarker requires the Laravel Passport authentication and authorization system.  To install it, execute the following shell commands:
+
+```console
+php artisan passport:install
+php artisan passport:keys
+```
+
+
 ## Documentation ##
 
 Different types of code are commented in different ways:
@@ -185,7 +197,6 @@ Special emphasis is placed on how the various parts of the application fit toget
 
 In the future, I plan to implement the following enhancements:
 
-* A modern, Vue.js-based user interface which communicates with the server via AJAX.
 * Search capabilities.
 * Functionality to import bookmarks from web browsers.
 * The ability to share bookmarks with other users.
