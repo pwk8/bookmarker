@@ -20,16 +20,55 @@ use Illuminate\Support\Facades\Auth;
  *
  * All methods of the controller require authentication.  Many methods assume there is an authenticated user.
  *
- * @see \App\Bookmark Model for bookmarks, e.g., the resources managed by this controller.
+ * @see \App\Bookmark  Model for bookmarks, e.g., the entities managed by this controller.
  */
 class BookmarkController extends Controller
 {
     /**
-     * Names of properties which are subject to CRUD operations.
+     * Names of attributes of the Bookmark model which are populated by the `store` and `update` actions.
      *
      * @var array
      */
-    private static $fieldNames = ['uri', 'iconuri', 'title', 'tags', 'keyword', 'description'];
+    public static $writeAttributes = ['uri', 'iconuri', 'title', 'tags', 'keyword', 'description'];
+
+    /**
+     * Format a message indicating that a bookmark was successfully stored for the first time, e.g., created.
+     *
+     * @param \App\Bookmark  $bookmark
+     * @return string
+     */
+    public static function formatStoreSuccessMessage(Bookmark $bookmark)
+    {
+        return "The bookmark, \"{$bookmark->title}\", was created!";
+        // @todo Fix smart quotes in the Modern UI.  return "The bookmark, &ldquo;{$bookmark->title}&rdquo;, was created!";
+    }
+
+    /**
+     * Format a message indicating that a bookmark was successfully updated.
+     *
+     * @param \App\Bookmark  $bookmark
+     * @return string
+     */
+    public static function formatUpdateSuccessMessage(Bookmark $bookmark)
+    {
+        return "The bookmark, \"{$bookmark->title}\", was updated!";
+        // @todo Fix smart quotes in the Modern UI.  return "The bookmark, &ldquo;{$bookmark->title}&rdquo;, was updated!";
+    }
+
+    /**
+     * Format a message indicating that a bookmark was successfully destroyed.
+     *
+     * This method must be invoked *before* the bookmark is actually destroyed, because the message includes data
+     * which is cleared when the bookmark is destroyed.
+     *
+     * @param \App\Bookmark  $bookmark
+     * @return string
+     */
+    public static function formatDestroySuccessMessage(Bookmark $bookmark)
+    {
+        return "The bookmark, \"{$bookmark->title}\", was trashed!";
+        // @todo Fix smart quotes in the Modern UI.  return "The bookmark, &ldquo;{$bookmark->title}&rdquo;, was trashed!";
+    }
 
     /**
      * Construct the controller.
@@ -39,28 +78,6 @@ class BookmarkController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-    }
-
-    /**
-     * Apply specific fields in an HTTP request to the model of a bookmark.
-     *
-     * If a field does not exist in the request, it is silently ignored.
-     *
-     * @see    \App\Http\Controllers\BookmarkController::$fieldNames Names the fields to be applied.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Bookmark $bookmark
-     * @return void
-     */
-    protected function applyRequestToModel(Request $request, Bookmark $bookmark)
-    {
-        foreach (self::$fieldNames as $key)
-        {
-            if ($request->exists($key))
-            {
-                $bookmark->$key = $request->$key;
-            }
-        }
     }
 
     /**
@@ -76,7 +93,7 @@ class BookmarkController extends Controller
     /**
      * Generate a response which redirects to show a specific bookmark.
      *
-     * @param  \App\Bookmark
+     * @param  \App\Bookmark  $bookmark
      * @return \Illuminate\Http\RedirectResponse
      */
     protected function generateRedirectToBookmarkShow(Bookmark $bookmark)
@@ -91,9 +108,7 @@ class BookmarkController extends Controller
      */
     public function index()
     {
-        $bookmarks = Bookmark::where('owner_user_id', '=', Auth::id())->orderBy('id')->get();
-
-        return view('bookmark.index', ['bookmarks' => $bookmarks]);
+        return view('bookmark.index', ['bookmarks' => Bookmark::allOwnedByAuthenticatedUser()]);
     }
 
     /**
@@ -118,7 +133,7 @@ class BookmarkController extends Controller
      * @see    \App\Http\Controllers\BookmarkController::generateRedirectToBookmarkShow()
      *             Redirects to show the new bookmark.
      *
-     * @param  \App\Http\Requests\StoreBookmark $request
+     * @param  \App\Http\Requests\StoreBookmark  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreBookmark $request)
@@ -126,12 +141,11 @@ class BookmarkController extends Controller
         $this->authorize('create', Bookmark::class);
 
         $bookmark = new Bookmark;
-        $this->applyRequestToModel($request, $bookmark);
-        $bookmark->owner_user_id = Auth::id();
-        $bookmark->save();
+        $this->transcribeRequestToModel($request, $bookmark, self::$writeAttributes);
+        $bookmark->changeOwnerToAuthenticatedUser()->save();
 
         return $this->generateRedirectToBookmarkShow($bookmark)
-            ->with('status', "The bookmark, &ldquo;{$bookmark->title}&rdquo;, was created!");
+                    ->with('status', self::formatStoreSuccessMessage($bookmark));
     }
 
     /**
@@ -139,7 +153,7 @@ class BookmarkController extends Controller
      *
      * The authenticated user must be authorized to `view` the bookmark.
      *
-     * @param  \App\Bookmark $bookmark
+     * @param  \App\Bookmark  $bookmark
      * @return \Illuminate\Http\Response
      */
     public function show(Bookmark $bookmark)
@@ -154,7 +168,7 @@ class BookmarkController extends Controller
      *
      * The authenticated user must be authorized to `update` the bookmark.
      *
-     * @param  \App\Bookmark $bookmark
+     * @param  \App\Bookmark  $bookmark
      * @return \Illuminate\Http\Response
      */
     public function edit(Bookmark $bookmark)
@@ -172,19 +186,19 @@ class BookmarkController extends Controller
      * @see    \App\Http\Controllers\BookmarkController::generateRedirectToBookmarkShow()
      *             Redirects to show the updated bookmark.
      *
-     * @param  \App\Http\Requests\UpdateBookmark $request
-     * @param  \App\Bookmark $bookmark
+     * @param  \App\Http\Requests\UpdateBookmark  $request
+     * @param  \App\Bookmark                      $bookmark
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateBookmark $request, Bookmark $bookmark)
     {
         $this->authorize('update', $bookmark);
 
-        $this->applyRequestToModel($request, $bookmark);
+        $this->transcribeRequestToModel($request, $bookmark, self::$writeAttributes);
         $bookmark->save();
 
         return $this->generateRedirectToBookmarkShow($bookmark)
-            ->with('status', "The bookmark, &ldquo;{$bookmark->title}&rdquo;, was updated!");
+                    ->with('status', self::formatUpdateSuccessMessage($bookmark));
     }
 
     /**
@@ -195,18 +209,18 @@ class BookmarkController extends Controller
      * @see    \App\Http\Controllers\BookmarkController::generateRedirectToBookmarkIndex()
      *             Redirects to the index of bookmarks.
      *
-     * @param  \App\Bookmark $bookmark
+     * @param  \App\Bookmark  $bookmark
      * @return \Illuminate\Http\Response
      */
     public function destroy(Bookmark $bookmark)
     {
         $this->authorize('delete', $bookmark);
 
-        $oldTitle = $bookmark->title;
+        $successMessage = self::formatDestroySuccessMessage($bookmark);
 
         $bookmark->delete();
 
         return $this->generateRedirectToBookmarkIndex()
-            ->with('status', "The bookmark, &ldquo;$oldTitle&rdquo;, was trashed!");
+                    ->with('status', $successMessage);
     }
 }
